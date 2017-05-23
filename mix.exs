@@ -7,7 +7,13 @@ defmodule Gingerbread.Mixfile do
             build_embedded: Mix.env == :prod,
             start_permanent: Mix.env == :prod,
             deps: deps(),
-            dialyzer: [plt_add_deps: :transitive]
+            dialyzer: [plt_add_deps: :transitive],
+            name: "Gingerbread",
+            source_url: "https://github.com/ScrimpyCat/gingerbread",
+            docs: [
+                main: "gingerbread",
+                extras: ["README.md": [filename: "gingerbread", title: "Gingerbread"]]
+            ]
         ]
     end
 
@@ -24,6 +30,9 @@ defmodule Gingerbread.Mixfile do
     # Dependencies listed here are available only for this project
     # and cannot be accessed from applications inside the apps folder
     defp deps do
-        []
+        [
+            { :ex_doc, "~> 0.15.1", only: :dev, runtime: false },
+            { :simple_markdown, "~> 0.3.0", only: :dev, runtime: false }
+        ]
     end
 end
