@@ -26,7 +26,7 @@ defmodule Gingerbread.Service.Repo.Migrations.Entity do
             add :parent_id, references(:entities),
                 null: false
 
-            add :entity_id, references(:entities),
+            add :child_id, references(:entities),
                 null: false
 
             timestamps()
