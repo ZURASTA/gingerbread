@@ -1,9 +1,24 @@
 defmodule Gingerbread.Service.Entity do
+    use GenServer
+
     alias Gingerbread.Service.Entity
     require Logger
     import Ecto.Query
 
     @type uuid :: String.t
+
+    def start_link() do
+        GenServer.start_link(__MODULE__, [], name: __MODULE__)
+    end
+
+    def handle_call({ :create, { identity } }, _from, state), do: { :reply, create(identity), state }
+    def handle_call({ :create, { identity, name } }, _from, state), do: { :reply, create(identity, name), state }
+    def handle_call({ :destroy, { entity } }, _from, state), do: { :reply, destroy(entity), state }
+    def handle_call({ :transfer, { entity, identity } }, _from, state), do: { :reply, transfer(entity, identity), state }
+    def handle_call({ :add_child, { parent, child } }, _from, state), do: { :reply, add_child(parent, child), state }
+    def handle_call({ :remove_child, { parent, child } }, _from, state), do: { :reply, remove_child(parent, child), state }
+    def handle_call({ :entities, { identity } }, _from, state), do: { :reply, entities(identity), state }
+    def handle_call({ :dependants, { entity } }, _from, state), do: { :reply, dependants(entity), state }
 
     defp unique_entity({ :error, %{ errors: [entity: _] } }), do: unique_entity(Gingerbread.Service.Repo.insert(Entity.Model.insert_changeset(%Entity.Model{})))
     defp unique_entity(entity), do: entity
