@@ -7,6 +7,7 @@ defmodule Gingerbread.Service.Repo.Migrations.Entity do
                 null: false
 
             add :entity, :uuid,
+                default: fragment("uuid_generate_v4()"),
                 null: false
 
             add :active, :boolean,
