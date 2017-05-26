@@ -23,7 +23,7 @@ defmodule Gingerbread.Service.Repo.Migrations.Entity do
         create index(:entities, [:entity], unique: true)
         create index(:entities, [:name], unique: false)
 
-        create table(:entity_dependants) do
+        create table(:entity_relationships) do
             add :parent_id, references(:entities),
                 null: false
 
@@ -33,6 +33,6 @@ defmodule Gingerbread.Service.Repo.Migrations.Entity do
             timestamps()
         end
 
-        create index(:entity_dependants, [:parent_id, :child_id], unique: true, name: :entity_dependants_relationship_index)
+        create index(:entity_relationships, [:parent_id, :child_id], unique: true, name: :entity_relationships_relationship_index)
     end
 end

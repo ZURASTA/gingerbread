@@ -1,4 +1,4 @@
-defmodule Gingerbread.Service.Entity.Dependants.Model do
+defmodule Gingerbread.Service.Entity.Relationship.Model do
     use Ecto.Schema
     import Ecto
     import Ecto.Changeset
@@ -20,7 +20,7 @@ defmodule Gingerbread.Service.Entity.Dependants.Model do
       `integer` to `Gingerbread.Service.Entity.Model`.
     """
 
-    schema "entity_dependants" do
+    schema "entity_relationships" do
         belongs_to :parent, Gingerbread.Service.Entity.Model
         belongs_to :child, Gingerbread.Service.Entity.Model
         timestamps()

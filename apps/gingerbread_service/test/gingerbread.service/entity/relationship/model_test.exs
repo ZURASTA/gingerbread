@@ -1,23 +1,23 @@
-defmodule Gingerbread.Service.Entity.Dependants.ModelTest do
+defmodule Gingerbread.Service.Entity.Relationship.ModelTest do
     use Gingerbread.Service.Case
 
     alias Gingerbread.Service.Entity
 
-    @valid_model %Entity.Dependants.Model{
+    @valid_model %Entity.Relationship.Model{
         parent_id: 1,
         child_id: 2,
     }
 
     test "empty" do
-        refute_change(%Entity.Dependants.Model{}, %{})
+        refute_change(%Entity.Relationship.Model{}, %{})
     end
 
     test "only parent" do
-        refute_change(%Entity.Dependants.Model{}, %{ parent_id: @valid_model.parent_id })
+        refute_change(%Entity.Relationship.Model{}, %{ parent_id: @valid_model.parent_id })
     end
 
     test "only child" do
-        refute_change(%Entity.Dependants.Model{}, %{ child_id: @valid_model.child_id })
+        refute_change(%Entity.Relationship.Model{}, %{ child_id: @valid_model.child_id })
     end
 
     test "without parent" do
@@ -59,16 +59,16 @@ defmodule Gingerbread.Service.Entity.Dependants.ModelTest do
         entity2 = Gingerbread.Service.Repo.insert!(Entity.Model.insert_changeset(%Entity.Model{}, %{ identity: Ecto.UUID.generate(), entity: identity2 }))
         entity3 = Gingerbread.Service.Repo.insert!(Entity.Model.insert_changeset(%Entity.Model{}, %{ identity: Ecto.UUID.generate(), entity: identity3 }))
 
-        dependant = Gingerbread.Service.Repo.insert!(Entity.Dependants.Model.changeset(%Entity.Dependants.Model{}, %{ parent_id: entity.id, child_id: entity2.id }))
+        dependant = Gingerbread.Service.Repo.insert!(Entity.Relationship.Model.changeset(%Entity.Relationship.Model{}, %{ parent_id: entity.id, child_id: entity2.id }))
 
-        assert_change(%Entity.Dependants.Model{}, %{ parent_id: dependant.parent_id, child_id: dependant.child_id })
+        assert_change(%Entity.Relationship.Model{}, %{ parent_id: dependant.parent_id, child_id: dependant.child_id })
         |> assert_insert(:error)
         |> assert_error_value(:relationship, { "has already been taken", [] })
 
-        assert_change(%Entity.Dependants.Model{}, %{ parent_id: dependant.parent_id, child_id: entity3.id })
+        assert_change(%Entity.Relationship.Model{}, %{ parent_id: dependant.parent_id, child_id: entity3.id })
         |> assert_insert(:ok)
 
-        assert_change(%Entity.Dependants.Model{}, %{ parent_id: entity3.id, child_id: dependant.child_id })
+        assert_change(%Entity.Relationship.Model{}, %{ parent_id: entity3.id, child_id: dependant.child_id })
         |> assert_insert(:ok)
     end
 end
