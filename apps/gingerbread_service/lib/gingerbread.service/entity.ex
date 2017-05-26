@@ -19,6 +19,7 @@ defmodule Gingerbread.Service.Entity do
     def handle_call({ :remove_child, { parent, child } }, _from, state), do: { :reply, remove_child(parent, child), state }
     def handle_call({ :entities, { identity } }, _from, state), do: { :reply, entities(identity), state }
     def handle_call({ :dependants, { entity } }, _from, state), do: { :reply, dependants(entity), state }
+    def handle_call({ :name, { entity } }, _from, state), do: { :reply, name(entity), state }
 
     defp unique_entity({ :error, %{ errors: [entity: _] } }), do: unique_entity(Gingerbread.Service.Repo.insert(Entity.Model.insert_changeset(%Entity.Model{})))
     defp unique_entity(entity), do: entity
@@ -124,5 +125,17 @@ defmodule Gingerbread.Service.Entity do
 
         Gingerbread.Service.Repo.all(query)
         |> Enum.map(fn { name, entity } -> { String.to_atom(name), entity } end)
+    end
+
+    @spec name(uuid) :: { :ok, atom | nil } | { :error, String.t }
+    def name(entity_id) do
+        query = from entity in Entity.Model,
+            where: entity.entity == ^entity_id and entity.active == true
+
+        case Gingerbread.Service.Repo.one(query) do
+            %Entity.Model{ name: nil } -> { :ok, nil }
+            %Entity.Model{ name: name } -> { :ok, name }
+            nil -> { :error, "Entity does not exist" }
+        end
     end
 end
