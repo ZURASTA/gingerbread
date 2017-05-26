@@ -26,7 +26,7 @@ defmodule Gingerbread.Service.Entity.Model do
 
     schema "entities" do
         field :identity, Ecto.UUID
-        field :entity, Ecto.UUID
+        field :entity, Ecto.UUID, read_after_writes: true
         field :active, :boolean
         field :name, :string
         timestamps()
@@ -37,14 +37,12 @@ defmodule Gingerbread.Service.Entity.Model do
 
       Enforces:
       * `identity` field is required
-      * `entity` field is required
       * `active` field is not empty
-      * `entity` field is unique
     """
     def insert_changeset(struct, params \\ %{}) do
         struct
-        |> cast(params, [:identity, :entity, :active, :name])
-        |> validate_required([:identity, :entity])
+        |> cast(params, [:identity, :active, :name])
+        |> validate_required([:identity])
         |> validate_emptiness(:active)
         |> unique_constraint(:entity)
     end
@@ -54,15 +52,12 @@ defmodule Gingerbread.Service.Entity.Model do
 
       Enforces:
       * `identity` field is not empty
-      * `entity` field is not empty
       * `active` field is not empty
-      * `entity` field is unique
     """
     def update_changeset(struct, params \\ %{}) do
         struct
-        |> cast(params, [:identity, :entity, :active, :name])
+        |> cast(params, [:identity, :active, :name])
         |> validate_emptiness(:identity)
-        |> validate_emptiness(:entity)
         |> validate_emptiness(:active)
         |> unique_constraint(:entity)
     end

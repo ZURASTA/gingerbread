@@ -15,15 +15,9 @@ defmodule Gingerbread.Service.Entity.ModelTest do
     end
 
     test "only identity" do
-        refute_change(%Entity.Model{}, %{ identity: @valid_model.identity }, :insert_changeset)
+        assert_change(%Entity.Model{}, %{ identity: @valid_model.identity }, :insert_changeset)
 
         assert_change(@valid_model, %{ identity: Ecto.UUID.generate() }, :update_changeset)
-    end
-
-    test "only entity" do
-        refute_change(%Entity.Model{}, %{ entity: @valid_model.entity }, :insert_changeset)
-
-        assert_change(@valid_model, %{ entity: Ecto.UUID.generate() }, :update_changeset)
     end
 
     test "only active" do
@@ -40,10 +34,6 @@ defmodule Gingerbread.Service.Entity.ModelTest do
 
     test "without identity" do
         refute_change(@valid_model, %{ identity: nil }, :insert_changeset)
-    end
-
-    test "without entity" do
-        refute_change(@valid_model, %{ entity: nil }, :insert_changeset)
     end
 
     test "without active" do
@@ -82,11 +72,11 @@ defmodule Gingerbread.Service.Entity.ModelTest do
         end)
         entity = Gingerbread.Service.Repo.insert!(Entity.Model.insert_changeset(@valid_model, %{ entity: identity }))
 
-        assert_change(@valid_model, %{ entity: identity }, :insert_changeset)
+        assert_change(@valid_model, %{}, :insert_changeset)
         |> assert_insert(:error)
         |> assert_error_value(:entity, { "has already been taken", [] })
 
-        assert_change(@valid_model, %{ entity: identity2 }, :insert_changeset)
+        assert_change(%{ @valid_model | entity: identity2 }, %{}, :insert_changeset)
         |> assert_insert(:ok)
     end
 end
