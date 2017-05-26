@@ -31,5 +31,7 @@ defmodule Gingerbread.Service.Repo.Migrations.Entity do
 
             timestamps()
         end
+
+        create index(:entity_dependants, [:parent_id, :child_id], unique: true, name: :entity_dependants_relationship_index)
     end
 end
