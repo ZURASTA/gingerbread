@@ -105,22 +105,24 @@ defmodule Gingerbread.Service.Entity do
         end
     end
 
-    @spec entities(uuid) :: [uuid]
+    @spec entities(uuid) :: [{ atom | nil, uuid }]
     def entities(identity) do
         query = from entity in Entity.Model,
             where: entity.identity == ^identity and entity.active == true,
-            select: entity.entity
+            select: { entity.name, entity.entity }
 
         Gingerbread.Service.Repo.all(query)
+        |> Enum.map(fn { name, entity } -> { String.to_atom(name), entity } end)
     end
 
-    @spec dependants(uuid) :: [uuid]
+    @spec dependants(uuid) :: [{ atom | nil, uuid }]
     def dependants(entity) do
         query = from relationship in Entity.Relationship.Model,
             join: parent_entity in Entity.Model, on: parent_entity.id == relationship.parent_id and parent_entity.entity == ^entity,
             join: child_entity in Entity.Model, on: child_entity.id == relationship.child_id,
-            select: child_entity.entity
+            select: { child_entity.name, child_entity.entity }
 
         Gingerbread.Service.Repo.all(query)
+        |> Enum.map(fn { name, entity } -> { String.to_atom(name), entity } end)
     end
 end
