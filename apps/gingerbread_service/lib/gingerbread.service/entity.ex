@@ -127,7 +127,10 @@ defmodule Gingerbread.Service.Entity do
             select: { child_entity.name, child_entity.entity }
 
         Gingerbread.Service.Repo.all(query)
-        |> Enum.map(fn { name, entity } -> { String.to_atom(name), entity } end)
+        |> Enum.map(fn
+            { nil, entity } -> { nil, entity }
+            { name, entity } -> { String.to_atom(name), entity }
+        end)
     end
 
     @spec name(uuid) :: { :ok, atom | nil } | { :error, String.t }
