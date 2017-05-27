@@ -19,9 +19,23 @@ An entity is associated with one identity. This identity is an external UUID tha
 
 ### Relationship
 
-Entities can be grouped into various relationships. This is exposed through parent-child connections, however this relationship isn't limited to a single parent-child. Rather this relationship can take the form of a one-to-many, many-to-one, many-to-many, tree, circular, or even self. The only restriction on a relationship is that the specific parent-child connection can only be made once (to avoid duplicates of the same relationship).
+Entities can be grouped into various relationships. This is exposed through parent-child connections, however this relationship isn't limited to a single parent-child. Rather this relationship can take the form of a one-to-many, many-to-one, many-to-many, tree, circular, or even self. The only restriction on a relationship is that the specific parent-child connection can only be made once (to avoid duplicates of the same relationship). Some examples of these relationships are as follows:
 
-Relationships can be removed and re-added as necessary. They can be applied to any entity, regardless of owning identity.
+```svgbob
++---+    +---+   +---+    +---+   +---+<-+
+| A |--->| B |   | A |<-->| B |   | A |  |
++---+    +---+   +---+    +---+   +---+<-+
+
++---+   +---+    +---+   +---+   +---+    +---+
+| A |-->| B |--->| C |   | A |-->| B |--->| C |
++-+-+   +---+    +---+   +---+   +---+    +-+-+
+  |                        ^                |
+  |     +---+              |                |
+  +---->| D |              +----------------+
+        +---+
+```
+
+Relationships can be removed and re-added as necessary. They can be applied to any entity, regardless of owning identity. If a relationship is removed (either explicitly or an entity consisting of one part of that relationship is destroyed), any other connections that were apart of that relationship hierarchy will be unchanged. Any kind of specific behaviour around how relationships should behave under those circumstances must be handled externally.
 
 
 ### Use Cases?
@@ -32,4 +46,5 @@ Anywhere you want to retain relationships between various types of data, but all
 Todo
 ----
 
+- [ ] Possibly support different kinds of relationship types (to simplify need for external logic).
 - [ ] PubSub?
