@@ -6,6 +6,7 @@ defmodule Gingerbread.Mixfile do
             apps_path: "apps",
             build_embedded: Mix.env == :prod,
             start_permanent: Mix.env == :prod,
+            aliases: aliases(),
             deps: deps(),
             dialyzer: [plt_add_deps: :transitive],
             name: "Gingerbread",
@@ -32,7 +33,20 @@ defmodule Gingerbread.Mixfile do
     defp deps do
         [
             { :ex_doc, "~> 0.15.1", only: :dev, runtime: false },
-            { :simple_markdown, "~> 0.3.0", only: :dev, runtime: false }
+            { :simple_markdown, "~> 0.3.0", only: :dev, runtime: false, override: true },
+            { :simple_markdown_extension_svgbob, "~> 0.0.1", only: :dev, runtime: false }
+        ]
+    end
+
+    # Aliases are shortcuts or tasks specific to the current project.
+    # For example, to create, migrate and run the seeds file at once:
+    #
+    #     $ mix ecto.setup
+    #
+    # See the documentation for `Mix` for more info on aliases.
+    defp aliases do
+        [
+            "docs": ["run documentation.exs", "docs"],
         ]
     end
 end
