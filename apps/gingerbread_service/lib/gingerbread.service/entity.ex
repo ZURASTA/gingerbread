@@ -140,7 +140,7 @@ defmodule Gingerbread.Service.Entity do
 
         case Gingerbread.Service.Repo.one(query) do
             %Entity.Model{ name: nil } -> { :ok, nil }
-            %Entity.Model{ name: name } -> { :ok, name }
+            %Entity.Model{ name: name } -> { :ok, String.to_atom(name) }
             nil -> { :error, "Entity does not exist" }
         end
     end
