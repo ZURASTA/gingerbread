@@ -77,17 +77,25 @@ defmodule Gingerbread.API.EntityTest do
         assert { :error, "Failed to create relationship" } == Entity.add_child(entity3, entity2)
 
         assert Enum.sort([{ nil, entity1 }, { nil, entity2 }, { nil, entity3 }]) == Enum.sort(Entity.dependants(entity1))
-        assert Enum.sort([{ nil, entity1 }]) == Enum.sort(Entity.dependants(entity2))
-        assert Enum.sort([{ nil, entity2 }]) == Enum.sort(Entity.dependants(entity3))
+        assert [{ nil, entity1 }] == Entity.dependants(entity2)
+        assert [{ nil, entity2 }] == Entity.dependants(entity3)
+
+        assert Enum.sort([{ nil, entity1 }, { nil, entity2 }]) == Enum.sort(Entity.parents(entity1))
+        assert Enum.sort([{ nil, entity1 }, { nil, entity3 }]) == Enum.sort(Entity.parents(entity2))
+        assert [{ nil, entity1 }] == Entity.parents(entity3)
 
         assert :ok == Entity.remove_child(entity1, entity1)
         assert { :error, "Relationship does not exist" } == Entity.remove_child(entity1, entity1)
 
         :ok = Entity.destroy(entity2)
 
-        assert [{ nil, entity3 }] == Enum.sort(Entity.dependants(entity1))
-        assert [] == Enum.sort(Entity.dependants(entity2))
-        assert [] == Enum.sort(Entity.dependants(entity3))
+        assert [{ nil, entity3 }] == Entity.dependants(entity1)
+        assert [] == Entity.dependants(entity2)
+        assert [] == Entity.dependants(entity3)
+
+        assert [] == Entity.parents(entity1)
+        assert [] == Entity.parents(entity2)
+        assert [{ nil, entity1 }] == Entity.parents(entity3)
 
         assert { :error, "Child entity does not exist" } == Entity.add_child(entity1, entity2)
         assert { :error, "Parent entity does not exist" } == Entity.add_child(entity2, entity1)

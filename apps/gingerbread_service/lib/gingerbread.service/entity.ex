@@ -29,6 +29,7 @@ defmodule Gingerbread.Service.Entity do
     def handle_call({ :add_child, { parent, child } }, _from, state), do: { :reply, add_child(parent, child), state }
     def handle_call({ :remove_child, { parent, child } }, _from, state), do: { :reply, remove_child(parent, child), state }
     def handle_call({ :entities, { identity } }, _from, state), do: { :reply, entities(identity), state }
+    def handle_call({ :parents, { entity } }, _from, state), do: { :reply, parents(entity), state }
     def handle_call({ :dependants, { entity } }, _from, state), do: { :reply, dependants(entity), state }
     def handle_call({ :name, { entity } }, _from, state), do: { :reply, name(entity), state }
     def handle_call({ :identity, { entity } }, _from, state), do: { :reply, identity(entity), state }
@@ -164,6 +165,26 @@ defmodule Gingerbread.Service.Entity do
         query = from entity in Entity.Model,
             where: entity.identity == ^identity and entity.active == true,
             select: { entity.name, entity.entity }
+
+        Gingerbread.Service.Repo.all(query)
+        |> Enum.map(fn
+            { nil, entity } -> { nil, entity }
+            { name, entity } -> { String.to_atom(name), entity }
+        end)
+    end
+
+    @doc """
+      Get the parents of an entity.
+
+      Returns the list of entities that this entity belongs to, where each entity is a
+      tagged entity `{ name, entity }`.
+    """
+    @spec parents(uuid) :: [{ atom | nil, uuid }]
+    def parents(entity) do
+        query = from relationship in Entity.Relationship.Model,
+            join: child_entity in Entity.Model, on: child_entity.id == relationship.child_id and child_entity.entity == ^entity,
+            join: parent_entity in Entity.Model, on: parent_entity.id == relationship.parent_id,
+            select: { parent_entity.name, parent_entity.entity }
 
         Gingerbread.Service.Repo.all(query)
         |> Enum.map(fn

@@ -87,6 +87,17 @@ defmodule Gingerbread.API.Entity do
     end
 
     @doc """
+      Get the parents of an entity.
+
+      Returns the list of entities that this entity belongs to, where each entity is a
+      tagged entity `{ name, entity }`.
+    """
+    @spec parents(uuid) :: [{ atom | nil, uuid }]
+    def parents(entity) do
+        GenServer.call(@service, { :parents, { entity } })
+    end
+
+    @doc """
       Get the children of an entity.
 
       Returns the list of entities belonging to the entity, where each entity is a tagged
