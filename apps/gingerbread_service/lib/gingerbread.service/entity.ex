@@ -31,6 +31,7 @@ defmodule Gingerbread.Service.Entity do
     def handle_call({ :entities, { identity } }, _from, state), do: { :reply, entities(identity), state }
     def handle_call({ :dependants, { entity } }, _from, state), do: { :reply, dependants(entity), state }
     def handle_call({ :name, { entity } }, _from, state), do: { :reply, name(entity), state }
+    def handle_call({ :identity, { entity } }, _from, state), do: { :reply, identity(entity), state }
 
     defp unique_entity({ :error, %{ errors: [entity: _] } }), do: unique_entity(Gingerbread.Service.Repo.insert(Entity.Model.insert_changeset(%Entity.Model{})))
     defp unique_entity(entity), do: entity
@@ -204,6 +205,21 @@ defmodule Gingerbread.Service.Entity do
         case Gingerbread.Service.Repo.one(query) do
             %Entity.Model{ name: nil } -> { :ok, nil }
             %Entity.Model{ name: name } -> { :ok, String.to_atom(name) }
+            nil -> { :error, "Entity does not exist" }
+        end
+    end
+
+    @doc """
+      Get the identity of an entity.
+
+      Returns `{ :ok, identity }` if successful. Otherwise returns the reason for failure.
+    """
+    def identity(entity_id) do
+        query = from entity in Entity.Model,
+            where: entity.entity == ^entity_id and entity.active == true
+
+        case Gingerbread.Service.Repo.one(query) do
+            %Entity.Model{ identity: identity } -> { :ok, identity }
             nil -> { :error, "Entity does not exist" }
         end
     end

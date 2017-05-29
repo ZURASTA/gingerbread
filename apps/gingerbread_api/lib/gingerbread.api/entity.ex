@@ -106,4 +106,14 @@ defmodule Gingerbread.API.Entity do
     def name(entity) do
         GenServer.call(@service, { :name, { entity } })
     end
+
+    @doc """
+      Get the identity of an entity.
+
+      Returns `{ :ok, identity }` if successful. Otherwise returns the reason for failure.
+    """
+    @spec identity(uuid) :: { :ok, uuid } | { :error, String.t }
+    def identity(entity) do
+        GenServer.call(@service, { :identity, { entity } })
+    end
 end

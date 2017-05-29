@@ -25,6 +25,8 @@ defmodule Gingerbread.API.EntityTest do
     test "transferring entity", %{ identity: identity } do
         { :ok, { nil, entity } } = Entity.create(identity)
 
+        assert { :ok, identity } == Entity.identity(entity)
+
         identity2 = Regex.replace(~r/[\da-f]/, identity, fn
             "0", _ -> "1"
             "1", _ -> "2"
@@ -45,12 +47,14 @@ defmodule Gingerbread.API.EntityTest do
         end)
 
         assert :ok == Entity.transfer(entity, identity2)
+        assert { :ok, identity2 } == Entity.identity(entity)
         assert [] == Entity.entities(identity)
         assert [{ nil, entity }] == Entity.entities(identity2)
 
         :ok = Entity.destroy(entity)
 
         assert { :error, "Entity does not exist" } == Entity.transfer(entity, identity)
+        assert { :error, "Entity does not exist" } == Entity.identity(entity)
         assert [] == Entity.entities(identity)
         assert [] == Entity.entities(identity2)
     end
