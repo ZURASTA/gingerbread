@@ -26,7 +26,7 @@ defmodule Gingerbread.API.Mixfile do
     end
 
     # Specifies which paths to compile per environment.
-    defp elixirc_paths(:test), do: ["lib", "test/support", "../sherbet_service/test/support"]
+    defp elixirc_paths(:test), do: ["lib", "test/support", "../gingerbread_service/test/support"]
     defp elixirc_paths(_),     do: ["lib"]
 
     # Dependencies can be Hex packages:
