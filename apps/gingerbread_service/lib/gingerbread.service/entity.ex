@@ -18,6 +18,14 @@ defmodule Gingerbread.Service.Entity do
 
     @type uuid :: String.t
 
+    def child_spec(_args) do
+        %{
+            id: __MODULE__,
+            start: { __MODULE__, :start_link, [] },
+            type: :worker
+        }
+    end
+
     def start_link() do
         GenServer.start_link(__MODULE__, [], name: __MODULE__)
     end
