@@ -30,17 +30,50 @@ defmodule Gingerbread.Service.Entity do
         GenServer.start_link(__MODULE__, [], name: __MODULE__)
     end
 
-    def handle_call({ :create, { identity } }, _from, state), do: { :reply, create(identity), state }
-    def handle_call({ :create, { identity, name } }, _from, state), do: { :reply, create(identity, name), state }
-    def handle_call({ :destroy, { entity } }, _from, state), do: { :reply, destroy(entity), state }
-    def handle_call({ :transfer, { entity, identity } }, _from, state), do: { :reply, transfer(entity, identity), state }
-    def handle_call({ :add_child, { parent, child } }, _from, state), do: { :reply, add_child(parent, child), state }
-    def handle_call({ :remove_child, { parent, child } }, _from, state), do: { :reply, remove_child(parent, child), state }
-    def handle_call({ :entities, { identity } }, _from, state), do: { :reply, entities(identity), state }
-    def handle_call({ :parents, { entity } }, _from, state), do: { :reply, parents(entity), state }
-    def handle_call({ :dependants, { entity } }, _from, state), do: { :reply, dependants(entity), state }
-    def handle_call({ :name, { entity } }, _from, state), do: { :reply, name(entity), state }
-    def handle_call({ :identity, { entity } }, _from, state), do: { :reply, identity(entity), state }
+    def handle_call({ :create, { identity } }, from, state) do
+        Task.start(fn -> GenServer.reply(from, create(identity)) end)
+        { :noreply, state }
+    end
+    def handle_call({ :create, { identity, name } }, from, state) do
+        Task.start(fn -> GenServer.reply(from, create(identity, name)) end)
+        { :noreply, state }
+    end
+    def handle_call({ :destroy, { entity } }, from, state) do
+        Task.start(fn -> GenServer.reply(from, destroy(entity)) end)
+        { :noreply, state }
+    end
+    def handle_call({ :transfer, { entity, identity } }, from, state) do
+        Task.start(fn -> GenServer.reply(from, transfer(entity, identity)) end)
+        { :noreply, state }
+    end
+    def handle_call({ :add_child, { parent, child } }, from, state) do
+        Task.start(fn -> GenServer.reply(from, add_child(parent, child)) end)
+        { :noreply, state }
+    end
+    def handle_call({ :remove_child, { parent, child } }, from, state) do
+        Task.start(fn -> GenServer.reply(from, remove_child(parent, child)) end)
+        { :noreply, state }
+    end
+    def handle_call({ :entities, { identity } }, from, state) do
+        Task.start(fn -> GenServer.reply(from, entities(identity)) end)
+        { :noreply, state }
+    end
+    def handle_call({ :parents, { entity } }, from, state) do
+        Task.start(fn -> GenServer.reply(from, parents(entity)) end)
+        { :noreply, state }
+    end
+    def handle_call({ :dependants, { entity } }, from, state) do
+        Task.start(fn -> GenServer.reply(from, dependants(entity)) end)
+        { :noreply, state }
+    end
+    def handle_call({ :name, { entity } }, from, state) do
+        Task.start(fn -> GenServer.reply(from, name(entity)) end)
+        { :noreply, state }
+    end
+    def handle_call({ :identity, { entity } }, from, state) do
+        Task.start(fn -> GenServer.reply(from, identity(entity)) end)
+        { :noreply, state }
+    end
 
     defp unique_entity({ :error, %{ errors: [entity: _] } }), do: unique_entity(Gingerbread.Service.Repo.insert(Entity.Model.insert_changeset(%Entity.Model{})))
     defp unique_entity(entity), do: entity
