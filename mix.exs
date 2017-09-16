@@ -10,7 +10,7 @@ defmodule Gingerbread.Mixfile do
             deps: deps(),
             dialyzer: [plt_add_deps: :transitive],
             name: "Gingerbread",
-            source_url: "https://github.com/ScrimpyCat/gingerbread",
+            source_url: "https://github.com/ZURASTA/gingerbread",
             docs: [
                 main: "gingerbread",
                 extras: ["README.md": [filename: "gingerbread", title: "Gingerbread"]]
