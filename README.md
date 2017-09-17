@@ -1,4 +1,4 @@
-[![Stories in Ready](https://badge.waffle.io/ZURASTA/gingerbread.png?label=ready&title=Ready)](https://waffle.io/ZURASTA/gingerbread?utm_source=badge)
+[![Stories in Ready](https://badge.waffle.io/ZURASTA/gingerbread.png?label=ready&title=Ready)](https://waffle.io/ZURASTA/gingerbread?utm_source=badge) [![CircleCI](https://circleci.com/gh/ZURASTA/gingerbread.svg?style=svg)](https://circleci.com/gh/ZURASTA/gingerbread)
 # Gingerbread (Entity Management)
 
 Manages the entities belonging to different identities. An entity is a unique ID that can be tagged to help identify it, and can be connected to other entities to form various relationships.
