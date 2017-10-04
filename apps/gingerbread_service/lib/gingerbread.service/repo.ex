@@ -1,19 +1,11 @@
 defmodule Gingerbread.Service.Repo do
-    @app :gingerbread_service
-    Gingerbread.Service.Repo.Config.setup(@app, __MODULE__)
-    use Ecto.Repo, otp_app: @app
+    use Ecto.Repo, otp_app: :gingerbread_service
 
-    def child_spec(_args) do
+    def child_spec(args) do
         %{
             id: __MODULE__,
-            start: { __MODULE__, :start_link, [] },
+            start: { __MODULE__, :start_link, [args] },
             type: :supervisor
         }
-    end
-
-    @on_load :setup_config
-    defp setup_config() do
-        Gingerbread.Service.Repo.Config.setup(@app, __MODULE__)
-        :ok
     end
 end
