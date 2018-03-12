@@ -21,9 +21,7 @@ defmodule Gingerbread.Service do
         setup_mode = args[:setup_mode] || :auto
 
         if setup_mode == :auto do
-            if Mix.env == :test do
-                Gingerbread.Service.Repo.DB.drop()
-            end
+            prepare_db()
             Gingerbread.Service.Repo.DB.create()
         end
 
@@ -40,5 +38,11 @@ defmodule Gingerbread.Service do
         end
 
         supervisor
+    end
+
+    if Mix.env == :test do
+        defp prepare_db(), do: Gingerbread.Service.Repo.DB.drop()
+    else
+        defp prepare_db(), do: :ok
     end
 end
